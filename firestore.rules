@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    match /leaderboard/{usernameClean} {
+      // Allow reading leaderboard records for sorting and display
+      allow read: if true;
+      
+      // Allow creation of a new reservation
+      allow create: if usernameClean == request.resource.data.username.lower()
+                    && request.resource.data.score == 0
+                    && request.resource.data.heartsRemaining == 3
+                    && request.resource.data.status == 'registered';
+                    
+      // Allow updating the record only once to complete the game and save score
+      allow update: if usernameClean == request.resource.data.username.lower()
+                    && resource.data.status == 'registered'
+                    && request.resource.data.status == 'completed'
+                    && request.resource.data.score >= 0 
+                    && request.resource.data.score <= 3350
+                    && request.resource.data.heartsRemaining >= 0 
+                    && request.resource.data.heartsRemaining <= 3;
+    }
+  }
+}
