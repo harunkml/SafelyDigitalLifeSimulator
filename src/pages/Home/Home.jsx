@@ -49,6 +49,10 @@ export default function Home() {
         setLockedMessage('Önce E-Posta oyununu oynamalısınız.');
         return;
       }
+      if (!passwordCompleted) {
+        setLockedMessage('Önce Şifre Laboratuvarı oyununu tamamlamalısınız.');
+        return;
+      }
       if (permissionsCompleted) {
         setLockedMessage('Bu oyunu zaten tamamladınız.');
         return;
