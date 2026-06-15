@@ -16,10 +16,10 @@ const PERMISSIONS = {
 };
 
 // ==========================================
-// SEVİYE 1: BAŞLANGIÇ (10 APP) - NET KARARLAR
+// TÜM GERÇEKÇİ UYGULAMALAR (100 APP)
 // ==========================================
 
-const LEVEL_1_APPS = [
+const ALL_APPS = [
   {
     id: 1,
     name: "Adım Sayar (StepCounter)",
@@ -268,14 +268,7 @@ const LEVEL_1_APPS = [
     isSafe: false,
     reason: "❌ TEHLİKELİ: El feneri hiçbir izin istememeli! Rehber ve SMS istiyorsa çok zararlıdır. KESINLIKLE REDDET!",
     difficulty: "easy"
-  }
-];
-
-// ==========================================
-// SEVİYE 2: ORTA (25 APP) - KARıŞıK İZİNLER
-// ==========================================
-
-const LEVEL_2_APPS = [
+  },
   {
     id: 11,
     name: "Instagram (Sosyal Medya)",
@@ -899,14 +892,7 @@ const LEVEL_2_APPS = [
     isSafe: false,
     reason: "❌ TEHLİKELİ: QR okuyucu sadece Kamera istemelidir! Konum, Rehber ve SMS istiyorsa spyware'dir. REDDET!",
     difficulty: "medium"
-  }
-];
-
-// ==========================================
-// SEVİYE 3: İLERİ (30 APP) - ALDATICI UYGULAMALAR
-// ==========================================
-
-const LEVEL_3_APPS = [
+  },
   {
     id: 36,
     name: "BeautySnap (Fotoğraf Filtresi)",
@@ -1655,14 +1641,7 @@ const LEVEL_3_APPS = [
     isSafe: true,
     reason: "✅ GÜVENLI: Antivirus uygulaması cihazı taramak için cihaz ayarlarına ihtiyaç duyabilir.",
     difficulty: "hard"
-  }
-];
-
-// ==========================================
-// SEVİYE 4: UZMAN (35 APP) - GERÇEKÇİ UYGULAMALAR
-// ==========================================
-
-const LEVEL_4_APPS = [
+  },
   {
     id: 66,
     name: "Garanti Bankası (Bankacılık)",
@@ -2540,17 +2519,6 @@ const LEVEL_4_APPS = [
 ];
 
 // ==========================================
-// TÜÜM UYGULAMALAR (100 APP)
-// ==========================================
-
-const ALL_APPS = [
-  ...LEVEL_1_APPS,
-  ...LEVEL_2_APPS,
-  ...LEVEL_3_APPS,
-  ...LEVEL_4_APPS
-];
-
-// ==========================================
 // OYUN FONKSİYONLARI
 // ==========================================
 
@@ -2569,20 +2537,10 @@ function checkDecision(app, userDecision) {
 }
 
 /**
- * Seviye seçimine göre uygulamalar getir
+ * Rastgele uygulamalar getir
  */
-function getAppsByDifficulty(difficulty, count) {
-  let apps = [];
-  
-  if (difficulty === 'easy') {
-    apps = LEVEL_1_APPS;
-  } else if (difficulty === 'medium') {
-    apps = [...LEVEL_1_APPS, ...LEVEL_2_APPS];
-  } else if (difficulty === 'hard') {
-    apps = ALL_APPS;
-  }
-  
-  return apps
+function getRandomApps(count = 15) {
+  return [...ALL_APPS]
     .sort(() => 0.5 - Math.random())
     .slice(0, count);
 }
@@ -2612,11 +2570,7 @@ function evaluatePermissionRisk(permissions) {
 export {
   PERMISSIONS,
   ALL_APPS,
-  LEVEL_1_APPS,
-  LEVEL_2_APPS,
-  LEVEL_3_APPS,
-  LEVEL_4_APPS,
   checkDecision,
-  getAppsByDifficulty,
+  getRandomApps,
   evaluatePermissionRisk
 };

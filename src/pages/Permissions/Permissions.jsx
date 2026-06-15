@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../state/AppContext';
-import { getAppsByDifficulty } from '../../data/permissionsData';
+import { getRandomApps } from '../../data/permissionsData';
 import { Smartphone, ShieldAlert, CheckCircle, Settings, Terminal } from 'lucide-react';
 import { saveFinalScore } from '../../firebase/leaderboardService';
 import { playSynthSound } from '../../utils/soundEffects';
@@ -23,7 +23,7 @@ export default function Permissions() {
   
   const navigate = useNavigate();
 
-  const [gameApps, setGameApps] = useState(() => getAppsByDifficulty('medium', 10));
+  const [gameApps, setGameApps] = useState(() => getRandomApps(15));
   const [gameStatus, setGameStatus] = useState('intro'); // 'intro' | 'playing' | 'won'
   const [currentIndex, setCurrentIndex] = useState(0);
   const [feedback, setFeedback] = useState(null); // { isCorrect: boolean, text: string, detail: string }
@@ -32,6 +32,7 @@ export default function Permissions() {
   const [showSettings, setShowSettings] = useState(false);
 
   const startNewGame = () => {
+    setGameApps(getRandomApps(15));
     setCurrentIndex(0);
     setLocalScore(0);
     setFeedback(null);
@@ -39,7 +40,7 @@ export default function Permissions() {
   };
 
   const handleDevSkip = () => {
-    setPermissionsScore(1200); // 10 apps * 100 + 200 bonus = 1200
+    setPermissionsScore(1700); // 15 apps * 100 + 200 bonus = 1700
     setPermissionsCompleted(true);
     setGameStatus('won');
   };
