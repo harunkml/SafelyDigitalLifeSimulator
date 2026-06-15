@@ -30,6 +30,14 @@ const isFirebaseConfigured = () => {
   }
 };
 
+// Promise timeout helper to prevent hanging if Firebase configuration or network is bad
+const withTimeout = (promise, ms = 4000) => {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error("Firebase request timed out")), ms))
+  ]);
+};
+
 /**
  * Checks if a username is unique on Firestore (case-insensitive check using lowercase IDs)
  * Fallback to LocalStorage simulation in dev mode if Firebase is not fully setup.
@@ -45,7 +53,7 @@ export const isUsernameUnique = async (username) => {
   if (isFirebaseConfigured()) {
     try {
       const docRef = doc(db, 'leaderboard', usernameClean);
-      const docSnap = await getDoc(docRef);
+      const docSnap = await withTimeout(getDoc(docRef), 4000);
       return !docSnap.exists();
     } catch (error) {
       console.warn("Firestore check failed, falling back to LocalStorage simulation:", error);
@@ -83,10 +91,10 @@ export const reserveUsername = async (username) => {
   if (isFirebaseConfigured()) {
     try {
       const docRef = doc(db, 'leaderboard', usernameClean);
-      await setDoc(docRef, {
+      await withTimeout(setDoc(docRef, {
         ...initialRecord,
         createdAt: serverTimestamp() // Firestore native timestamp
-      });
+      }), 4000);
       return;
     } catch (error) {
       console.warn("Firestore reservation failed, falling back to LocalStorage:", error);
@@ -122,10 +130,10 @@ export const saveFinalScore = async (username, score, lives) => {
   if (isFirebaseConfigured()) {
     try {
       const docRef = doc(db, 'leaderboard', usernameClean);
-      await updateDoc(docRef, {
+      await withTimeout(updateDoc(docRef, {
         ...finalRecord,
         completedAt: serverTimestamp()
-      });
+      }), 4000);
       return;
     } catch (error) {
       console.warn("Firestore final save failed, falling back to LocalStorage:", error);
@@ -175,7 +183,7 @@ export const getLeaderboard = async (filter = 'all') => {
         );
       }
 
-      const querySnapshot = await getDocs(lbQuery);
+      const querySnapshot = await withTimeout(getDocs(lbQuery), 5000);
       const records = [];
       querySnapshot.forEach((doc) => {
         records.push({ id: doc.id, ...doc.data() });
