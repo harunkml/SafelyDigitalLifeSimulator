@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../state/AppContext';
-import { mockApps } from '../../data/mockData';
+import { getAppsByDifficulty } from '../../data/permissionsData';
 import { Smartphone, ShieldAlert, CheckCircle, Settings, Terminal } from 'lucide-react';
 import { saveFinalScore } from '../../firebase/leaderboardService';
 import { playSynthSound } from '../../utils/soundEffects';
@@ -23,6 +23,7 @@ export default function Permissions() {
   
   const navigate = useNavigate();
 
+  const [gameApps, setGameApps] = useState(() => getAppsByDifficulty('medium', 10));
   const [gameStatus, setGameStatus] = useState('intro'); // 'intro' | 'playing' | 'won'
   const [currentIndex, setCurrentIndex] = useState(0);
   const [feedback, setFeedback] = useState(null); // { isCorrect: boolean, text: string, detail: string }
@@ -38,13 +39,13 @@ export default function Permissions() {
   };
 
   const handleDevSkip = () => {
-    setPermissionsScore(1000); // 8 apps * 100 + 200 bonus = 1000
+    setPermissionsScore(1200); // 10 apps * 100 + 200 bonus = 1200
     setPermissionsCompleted(true);
     setGameStatus('won');
   };
 
   const handleDecision = (blockAction, app) => {
-    const isCorrect = (blockAction && app.isSuspicious) || (!blockAction && !app.isSuspicious);
+    const isCorrect = (blockAction && !app.isSafe) || (!blockAction && app.isSafe);
     
     if (isCorrect) {
       playSynthSound('success', sfxVolume);
@@ -60,14 +61,14 @@ export default function Permissions() {
       text: isCorrect
         ? `Başarılı! ${app.name} hakkında doğru güvenlik kararı verdiniz.`
         : `Güvenlik Zafiyeti! ${app.name} kişisel verilerinizi ele geçirdi.`,
-      detail: app.descriptionOfRisk
+      detail: app.reason
     });
   };
 
   const closeFeedback = () => {
     setFeedback(null);
     
-    if (currentIndex < mockApps.length - 1) {
+    if (currentIndex < gameApps.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     } else {
       playSynthSound('win', sfxVolume);
@@ -154,7 +155,7 @@ export default function Permissions() {
     );
   }
 
-  const currentApp = mockApps[currentIndex];
+  const currentApp = gameApps[currentIndex];
 
   // Helper map for permission labels in Turkish
   const permissionLabels = {
@@ -204,7 +205,7 @@ export default function Permissions() {
           </button>
         </div>
         <div className="text-sm font-mono font-bold text-slate-500 dark:text-gray-400">
-          {currentIndex + 1} / {mockApps.length}
+          {currentIndex + 1} / {gameApps.length}
         </div>
       </div>
 
