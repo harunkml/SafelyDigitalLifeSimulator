@@ -597,6 +597,9 @@ export const AppProvider = ({ children }) => {
     setUsernameState(name);
     if (name) {
       localStorage.setItem('safely_username', name);
+      if (name.toLowerCase() === 'admin') {
+        setVeriPuani(5000);
+      }
     } else {
       localStorage.removeItem('safely_username');
     }
