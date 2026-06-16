@@ -122,7 +122,7 @@ export default function Leaderboard() {
                   style={{ minHeight: '76px' }}
                 >
                   {/* Position, Emoji Avatar & Name */}
-                  <div className="flex items-center gap-3 overflow-hidden pr-2 z-10">
+                  <div className="flex items-center gap-2 overflow-hidden pr-1 z-10">
                     <div className="w-6 flex items-center justify-center shrink-0">
                       {isUser ? (
                         <span className="text-[9px] bg-amber-500 text-white font-black px-1.5 py-0.5 rounded uppercase tracking-wider">Sen</span>
@@ -131,12 +131,12 @@ export default function Leaderboard() {
                       )}
                     </div>
 
-                    <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-black/10 border border-slate-350/20 flex items-center justify-center shrink-0 text-xl select-none">
+                    <div className="w-9 h-9 rounded-xl bg-white/20 dark:bg-black/10 border border-slate-350/20 flex items-center justify-center shrink-0 text-lg select-none">
                       {player.avatar || '👤'}
                     </div>
                     
                     <div className="overflow-hidden text-left">
-                      <span className="text-sm font-black text-slate-800 dark:text-white block truncate leading-tight">
+                      <span className="text-xs font-black text-slate-800 dark:text-white block truncate leading-tight">
                         {player.username}
                       </span>
                       <span className={`inline-block px-1.5 py-0.5 rounded text-[8px] font-bold border mt-1 ${getTitleBadgeStyle(player.title)}`}>
