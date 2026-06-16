@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useApp } from '../../state/AppContext';
-import { ShoppingBag, Coins, Check, Lock, ShieldCheck, HelpCircle } from 'lucide-react';
+import { ShoppingBag, Coins, Check, ShieldCheck, Gift } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SHOP_THEMES = [
@@ -44,11 +44,39 @@ export default function Store() {
     unlockedThemes, 
     activeTheme, 
     selectActiveTheme, 
-    buyTheme 
+    buyTheme,
+    lastDailyClaimTime,
+    claimDailyReward
   } = useApp();
 
   const [activeTab, setActiveTab] = useState('shop'); // 'shop' | 'inventory'
   const [successMessage, setSuccessMessage] = useState('');
+
+  // Cooldown calculator helper
+  const getRemainingCooldown = useCallback(() => {
+    const now = Date.now();
+    const cooldown = 24 * 60 * 60 * 1000;
+    const rem = cooldown - (now - lastDailyClaimTime);
+    return rem > 0 ? rem : 0;
+  }, [lastDailyClaimTime]);
+
+  const [timeLeft, setTimeLeft] = useState(getRemainingCooldown);
+
+  useEffect(() => {
+    // Sync local state when lastDailyClaimTime updates externally (asynchronously)
+    const timeoutId = setTimeout(() => {
+      setTimeLeft(getRemainingCooldown());
+    }, 0);
+
+    const interval = setInterval(() => {
+      setTimeLeft(getRemainingCooldown());
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeoutId);
+      clearInterval(interval);
+    };
+  }, [lastDailyClaimTime, getRemainingCooldown]);
 
   const handleBuy = (theme) => {
     const success = buyTheme(theme.id, theme.price);
@@ -60,6 +88,25 @@ export default function Store() {
 
   const handleActivate = (themeId) => {
     selectActiveTheme(themeId);
+  };
+
+  const handleClaimDaily = () => {
+    const success = claimDailyReward();
+    if (success) {
+      setSuccessMessage('Günlük Veri Bonusu (+50 VP) Alındı!');
+      setTimeLeft(24 * 60 * 60 * 1000); // Update local state instantly for smooth UX
+      setTimeout(() => setSuccessMessage(''), 3000);
+    }
+  };
+
+  const formatTime = (ms) => {
+    const totalSecs = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSecs / 3600);
+    const minutes = Math.floor((totalSecs % 3600) / 60);
+    const seconds = totalSecs % 60;
+    
+    const pad = (num) => String(num).padStart(2, '0');
+    return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
   };
 
   // Filter items
@@ -108,6 +155,45 @@ export default function Store() {
             </motion.div>
           )}
         </AnimatePresence>
+      </div>
+
+      {/* Günlük Veri Bonusu Card */}
+      <div className="p-4 rounded-2xl bg-white dark:bg-[#12141c] border border-slate-200 dark:border-[#1f2330] shadow-sm mb-4 relative overflow-hidden flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-3">
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
+            timeLeft > 0 
+              ? 'bg-slate-100 dark:bg-[#1f2330] border-slate-250 dark:border-[#1f2330] text-slate-400 dark:text-gray-500' 
+              : 'bg-emerald-500/10 dark:bg-emerald-500/15 border-emerald-500/20 dark:border-emerald-550/20 text-emerald-600 dark:text-emerald-400 animate-pulse'
+          }`}>
+            <Gift className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-tight">Günlük Veri Bonusu</h3>
+            <p className="text-[9px] text-slate-450 dark:text-gray-400 font-semibold leading-tight mt-0.5 max-w-[170px]">
+              {timeLeft > 0 
+                ? 'Sonraki veri yüklemesi için bekleyin.' 
+                : 'Her 24 saatte bir ücretsiz +50 VP kazanın!'}
+            </p>
+          </div>
+        </div>
+
+        <div>
+          {timeLeft > 0 ? (
+            <div className="flex flex-col items-end">
+              <span className="text-[8px] text-slate-400 dark:text-gray-500 font-bold uppercase tracking-wider mb-1 leading-none">Yeni Ödül İçin</span>
+              <div className="px-3 py-1.5 bg-slate-100 dark:bg-[#1f2330] border border-slate-250 dark:border-[#1f2330] rounded-xl font-mono text-[10px] font-black text-slate-500 dark:text-gray-450">
+                {formatTime(timeLeft)}
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={handleClaimDaily}
+              className="py-2 px-3.5 bg-emerald-500 hover:bg-emerald-600 active:scale-[0.97] text-white font-black text-[10px] uppercase tracking-wider rounded-xl transition-all shadow-[0_0_10px_rgba(34,197,94,0.25)] cursor-pointer"
+            >
+              Al (+50 VP)
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Tabs Menu (Store / Inventory) */}

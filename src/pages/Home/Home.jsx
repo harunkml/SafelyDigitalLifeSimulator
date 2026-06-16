@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../state/AppContext';
-import { Mail, KeyRound, Smartphone, Settings, UserCheck, Trophy, ShieldAlert, ShoppingBag, Gift } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, KeyRound, Smartphone, Settings, UserCheck, Trophy, ShieldAlert, ShoppingBag } from 'lucide-react';
 
 export default function Home() {
   const { 
@@ -15,27 +14,11 @@ export default function Home() {
     passwordCompleted, 
     permissionsCompleted,
     veriPuani,
-    setVeriPuani,
-    unlockedAchievements,
-    unlockAchievement
+    unlockedAchievements
   } = useApp();
   const navigate = useNavigate();
   
   const [lockedMessage, setLockedMessage] = useState('');
-  const [showDailyBonus, setShowDailyBonus] = useState(false);
-
-  // Daily entry bonus claim check
-  useEffect(() => {
-    if (!username) return;
-    const today = new Date().toLocaleDateString('tr-TR');
-    const lastClaim = localStorage.getItem('safely_last_daily_bonus_claim');
-    if (lastClaim !== today) {
-      setVeriPuani(veriPuani + 50);
-      localStorage.setItem('safely_last_daily_bonus_claim', today);
-      unlockAchievement('welcome_bonus');
-      setShowDailyBonus(true);
-    }
-  }, [username, veriPuani, setVeriPuani, unlockAchievement]);
 
   const handleAppClick = (app) => {
     if (app.path === '#') return;
@@ -256,44 +239,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Daily Login Bonus Modal */}
-      <AnimatePresence>
-        {showDailyBonus && (
-          <div className="absolute inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm flex flex-col justify-center p-6 z-50 animate-fade-in text-center select-none">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="bg-white dark:bg-[#12141c] border-2 border-amber-500 rounded-3xl p-6 shadow-2xl relative overflow-hidden max-w-xs mx-auto"
-            >
-              {/* Gold Top line ornament */}
-              <div className="absolute top-0 left-0 w-full h-1.5 bg-amber-500"></div>
-              
-              <div className="w-14 h-14 rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center justify-center mx-auto mb-4 animate-bounce">
-                <Gift className="w-7 h-7 text-amber-500" />
-              </div>
-              
-              <h3 className="text-amber-500 font-black text-lg uppercase tracking-tight">Günlük Giriş Bonusu!</h3>
-              <p className="text-slate-550 dark:text-gray-500 text-[10px] font-bold uppercase tracking-wider mt-0.5">Yenilendin</p>
-              
-              <div className="my-5 p-3 rounded-2xl bg-amber-50 dark:bg-amber-550/5 dark:bg-amber-500/5 border border-amber-500/15">
-                <span className="text-2xl font-black text-amber-600 dark:text-amber-500 font-mono">+50 VP</span>
-                <p className="text-[9px] text-slate-500 dark:text-gray-400 font-medium mt-1 leading-normal">
-                  Siber güvenlik dünyasına her gün giriş yap, ödüllerini topla!
-                </p>
-              </div>
-              
-              <button 
-                onClick={() => setShowDailyBonus(false)}
-                className="w-full py-3 bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white rounded-2xl text-xs uppercase font-black tracking-wider transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] cursor-pointer"
-              >
-                Kazanımı Al
-              </button>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

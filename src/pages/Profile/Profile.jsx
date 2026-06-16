@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useApp, ACHIEVEMENTS } from '../../state/AppContext';
 import { 
   User, 
@@ -47,11 +46,9 @@ export default function Profile() {
   const { 
     username, 
     setUsername, 
-    unlockedAchievements,
-    veriPuani
+    unlockedAchievements
   } = useApp();
   
-  const navigate = useNavigate();
   const [nameInput, setNameInput] = useState(username);
   const [successMsg, setSuccessMsg] = useState('');
   const [selectedAch, setSelectedAch] = useState(null);
@@ -64,7 +61,10 @@ export default function Profile() {
       const mockLeaderboard = JSON.parse(localStorage.getItem('safely_mock_leaderboard') || '{}');
       const record = mockLeaderboard[username.toLowerCase()];
       if (record && record.status === 'completed') {
-        setLeaderboardRecord(record);
+        const timeoutId = setTimeout(() => {
+          setLeaderboardRecord(record);
+        }, 0);
+        return () => clearTimeout(timeoutId);
       }
     }
   }, [username]);

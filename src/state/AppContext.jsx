@@ -6,6 +6,7 @@ const AppContext = createContext();
 // eslint-disable-next-line react-refresh/only-export-components
 export const useApp = () => useContext(AppContext);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const ACHIEVEMENTS = [
   {
     id: 'first_100_vp',
@@ -145,6 +146,11 @@ export const AppProvider = ({ children }) => {
 
   const [achievementToast, setAchievementToast] = useState(null);
 
+  const [lastDailyClaimTime, setLastDailyClaimTimeState] = useState(() => {
+    const saved = localStorage.getItem('safely_last_daily_bonus_claim_time');
+    return saved ? parseInt(saved, 10) : 0;
+  });
+
   const [sfxVolume, setSfxVolume] = useState(() => {
     const saved = localStorage.getItem('safely_sfx_volume');
     return saved ? parseInt(saved, 10) : 45; // Varsayılan SFX volume değeri (%45)
@@ -224,7 +230,7 @@ export const AppProvider = ({ children }) => {
   };
 
   const awardEndGameVP = (totalScore) => {
-    let reward = 0;
+    let reward;
     if (totalScore < 670) reward = 0;
     else if (totalScore < 1340) reward = 25;
     else if (totalScore < 2010) reward = 50;
@@ -234,6 +240,22 @@ export const AppProvider = ({ children }) => {
     
     setVeriPuani(veriPuani + reward);
     return reward;
+  };
+
+  const claimDailyReward = () => {
+    const now = Date.now();
+    const cooldown = 24 * 60 * 60 * 1000; // 24 hours
+    if (now - lastDailyClaimTime >= cooldown) {
+      const nextVP = veriPuani + 50;
+      setVeriPuani(nextVP);
+      setLastDailyClaimTimeState(now);
+      localStorage.setItem('safely_last_daily_bonus_claim_time', String(now));
+      
+      // Unlock the achievement
+      unlockAchievement('welcome_bonus');
+      return true;
+    }
+    return false;
   };
 
   const buyTheme = (themeId, price) => {
@@ -386,7 +408,9 @@ export const AppProvider = ({ children }) => {
         awardCompletionVP,
         awardEndGameVP,
         unlockAchievement,
-        buyTheme
+        buyTheme,
+        lastDailyClaimTime,
+        claimDailyReward
       }}
     >
       {children}
