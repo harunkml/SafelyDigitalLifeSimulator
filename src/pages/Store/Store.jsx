@@ -78,6 +78,18 @@ export default function Store() {
     return () => clearInterval(interval);
   }, [getRemainingCooldown]);
 
+  // Lock body scrolling when the loot box is opening
+  useEffect(() => {
+    if (openingBox) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [openingBox]);
+
   const handleClaimDaily = () => {
     const success = claimDailyReward();
     if (success) {
@@ -771,7 +783,7 @@ export default function Store() {
       {/* Loot Reveal Overlay Modal */}
       <AnimatePresence>
         {openingBox && (
-          <div className="absolute inset-0 bg-slate-950/80 dark:bg-black/90 backdrop-blur-md flex flex-col justify-center items-center p-6 z-50 animate-fade-in text-center select-none">
+          <div className="fixed inset-0 bg-slate-950/80 dark:bg-black/90 backdrop-blur-md flex flex-col justify-center items-center p-6 z-50 animate-fade-in text-center select-none">
             
             {!revealed ? (
               // Animation stage
