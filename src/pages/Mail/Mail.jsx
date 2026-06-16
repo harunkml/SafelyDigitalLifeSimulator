@@ -389,7 +389,7 @@ export default function MailScreen() {
         </div>
 
         <div className="border-l border-slate-200 dark:border-[#1f2330] pl-2 flex items-center gap-1">
-          {IS_DEV_MODE && (
+          {IS_DEV_MODE && username?.toLowerCase() === 'admin' && (
             <button 
               onClick={handleAdminSkip}
               title="Admin: Oyunu Geç (Tam Skor)"

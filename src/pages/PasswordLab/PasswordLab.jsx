@@ -17,7 +17,8 @@ export default function PasswordLab() {
     sfxVolume,
     awardAnswerVP,
     awardCompletionVP,
-    unlockAchievement
+    unlockAchievement,
+    username
   } = useApp();
   const navigate = useNavigate();
   
@@ -278,7 +279,7 @@ export default function PasswordLab() {
             <KeyRound className="w-4 h-4 text-cyan-accent" />
             Şifre Analizi
           </h2>
-          {IS_DEV_MODE && (
+          {IS_DEV_MODE && username?.toLowerCase() === 'admin' && (
             <button 
               onClick={handleDevSkip}
               className="p-1.5 rounded-lg bg-slate-100 dark:bg-[#1f2330] text-cyan-accent hover:bg-slate-200 dark:hover:bg-[#2a2f42] transition-colors"
