@@ -5,7 +5,7 @@ import { Wifi, Battery, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function OSFrame({ children }) {
-  const { batteryLevel, username } = useApp();
+  const { batteryLevel, username, achievementToast, setAchievementToast } = useApp();
   const navigate = useNavigate();
   const location = useLocation();
   const [time, setTime] = useState('');
@@ -25,7 +25,15 @@ export default function OSFrame({ children }) {
     return () => clearInterval(interval);
   }, []);
 
-
+  // Auto clear achievements toast
+  useEffect(() => {
+    if (achievementToast) {
+      const timer = setTimeout(() => {
+        setAchievementToast(null);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [achievementToast, setAchievementToast]);
 
   const isAtHome = location.pathname === '/home' || location.pathname === '/';
   const showBackButton = !isAtHome && location.pathname !== '/login';
@@ -68,6 +76,31 @@ export default function OSFrame({ children }) {
             <span className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-gray-400">Geri Dön</span>
           </div>
         )}
+
+        {/* Global Achievement Toast */}
+        <AnimatePresence>
+          {achievementToast && (
+            <motion.div
+              initial={{ opacity: 0, y: -80, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -40, scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="absolute top-14 left-4 right-4 z-50 p-3 bg-white dark:bg-[#12141c] border-2 border-amber-500 rounded-2xl shadow-xl flex items-center gap-3 backdrop-blur-md"
+            >
+              <div className="text-2xl w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+                {achievementToast.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[9px] text-amber-500 font-extrabold uppercase tracking-widest leading-none">Başarım Açıldı!</p>
+                <p className="text-xs font-black text-slate-800 dark:text-white mt-1 truncate">{achievementToast.title}</p>
+                <p className="text-[9px] text-slate-500 dark:text-gray-400 font-semibold leading-normal truncate">{achievementToast.description}</p>
+              </div>
+              <div className="text-right shrink-0">
+                <span className="text-xs font-black text-amber-500 font-mono">+{achievementToast.reward} VP</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Dynamic Page Rendering with Framer Motion Screen Transitions */}
         <div className="flex-1 overflow-y-auto relative flex flex-col bg-slate-50 dark:bg-[#08090d]">

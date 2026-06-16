@@ -10,7 +10,15 @@ import SettingsModal from '../../components/SettingsModal/SettingsModal';
 const IS_DEV_MODE = true;
 
 export default function PasswordLab() {
-  const { setPasswordScore, setPasswordCompleted, passwordScore, sfxVolume } = useApp();
+  const { 
+    setPasswordScore, 
+    setPasswordCompleted, 
+    passwordScore, 
+    sfxVolume,
+    awardAnswerVP,
+    awardCompletionVP,
+    unlockAchievement
+  } = useApp();
   const navigate = useNavigate();
   
   const [gameStatus, setGameStatus] = useState('intro'); // intro | playing | won
@@ -21,6 +29,9 @@ export default function PasswordLab() {
   const [localScore, setLocalScore] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const [streak, setStreak] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
 
   // Framer Motion controls
   const controls = useAnimation();
@@ -59,6 +70,8 @@ export default function PasswordLab() {
     }
     
     setCurrentIndex(0);
+    setStreak(0);
+    setCorrectCount(0);
     setGameStatus('playing');
     controls.set({ x: 0, opacity: 1 });
     setIsTransitioning(false);
@@ -93,18 +106,31 @@ export default function PasswordLab() {
     if (isStrongGuess && actualIsStrong) isCorrect = true;
 
     let nextScore = localScore;
+    let earnedText = '';
     if (isCorrect) {
       playSynthSound('success', sfxVolume);
       if (navigator.vibrate) navigator.vibrate(50);
       nextScore = localScore + 50;
       setLocalScore(nextScore);
       setFlash('green');
+
+      const nextStreak = streak + 1;
+      setStreak(nextStreak);
+      const nextCorrect = correctCount + 1;
+      setCorrectCount(nextCorrect);
+
+      const { vpEarned, streakBonus } = awardAnswerVP(true, nextStreak);
+      earnedText = `+${vpEarned} VP`;
+      if (streakBonus > 0) {
+        earnedText += ` & +${streakBonus} VP Seri Bonusu!`;
+      }
     } else {
       playSynthSound('failure', sfxVolume);
       if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
       nextScore = Math.max(0, localScore - 30);
       setLocalScore(nextScore);
       setFlash('red');
+      setStreak(0);
     }
 
     setToast({
@@ -112,6 +138,7 @@ export default function PasswordLab() {
       isCorrect,
       passwordText: currentPassword.text,
       explanation: currentPassword.explanation,
+      earnedVP: earnedText
     });
     
     setTimeout(() => setFlash(null), 300);
@@ -131,6 +158,24 @@ export default function PasswordLab() {
         setPasswordCompleted(true);
         setGameStatus('won');
         setIsTransitioning(false);
+
+        // Award completion VP
+        awardCompletionVP();
+
+        // Check achievements
+        const finalCorrect = isCorrect ? correctCount + 1 : correctCount;
+        if (finalCorrect >= 14) {
+          unlockAchievement('accuracy_90');
+        }
+        if (finalCorrect === 15) {
+          unlockAchievement('password_master');
+        }
+        const savedAchievements = JSON.parse(localStorage.getItem('safely_unlocked_achievements') || '[]');
+        const hasEmailMaster = savedAchievements.includes('email_master');
+        const hasPermissionMaster = savedAchievements.includes('permission_master');
+        if (finalCorrect === 15 && hasEmailMaster && hasPermissionMaster) {
+          unlockAchievement('cyber_detective');
+        }
       }, 1500);
     }
   };
@@ -311,6 +356,11 @@ export default function PasswordLab() {
                 <p className="text-sm font-bold uppercase mb-1">
                   {toast.isCorrect ? 'Doğru!' : 'Hatalı!'} <span className="text-slate-700 dark:text-gray-200 normal-case ml-1 font-mono text-xs bg-slate-200 dark:bg-[#08090d] px-1 py-0.5 rounded opacity-80">{toast.passwordText}</span>
                 </p>
+                {toast.isCorrect && toast.earnedVP && (
+                  <div className="mb-1.5 inline-block px-2 py-0.5 bg-amber-500/10 text-amber-500 text-[10px] font-extrabold uppercase rounded-full border border-amber-500/20">
+                    {toast.earnedVP}
+                  </div>
+                )}
                 <p className="text-xs text-slate-600 dark:text-gray-300 font-semibold leading-snug">{toast.explanation}</p>
               </div>
             </div>

@@ -9,6 +9,8 @@ import Permissions from '../../pages/Permissions/Permissions';
 import SettingsScreen from '../../pages/Settings/Settings';
 import Leaderboard from '../../pages/Leaderboard/Leaderboard';
 import AdminScreen from '../../pages/AdminScreen/AdminScreen';
+import Profile from '../../pages/Profile/Profile';
+import Store from '../../pages/Store/Store';
 
 
 function ProtectedRoute({ children }) {
@@ -124,6 +126,26 @@ export default function AppRouter() {
               <AdminRoute>
                 <AdminScreen />
               </AdminRoute>
+            } 
+          />
+
+          {/* Theme Store Screen */}
+          <Route 
+            path="/store" 
+            element={
+              <ProtectedRoute>
+                <Store />
+              </ProtectedRoute>
+            } 
+          />
+
+          {/* User Profile Screen */}
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
             } 
           />
 

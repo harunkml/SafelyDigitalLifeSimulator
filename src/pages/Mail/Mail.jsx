@@ -37,7 +37,10 @@ export default function MailScreen() {
     setMailCompleted, 
     setMailScore, 
     mailFailedLocked,
-    setMailFailedLocked 
+    setMailFailedLocked,
+    awardAnswerVP,
+    awardCompletionVP,
+    unlockAchievement
   } = useApp();
   
   const [gameStatus, setGameStatus] = useState('intro'); // 'intro' | 'playing' | 'feedback' | 'gameover' | 'won'
@@ -46,6 +49,10 @@ export default function MailScreen() {
   const [feedback, setFeedback] = useState(null); // { isCorrect: boolean, text: string, explanation: string }
   const [failedConsequence, setFailedConsequence] = useState(''); // consequenceFail text for gameover screen
   const [showSettings, setShowSettings] = useState(false);
+
+  const [streak, setStreak] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [earnedVPMsg, setEarnedVPMsg] = useState('');
 
   const handleAdminSkip = () => {
     setSecurityScore(1500); // 500 başlangıç + 20 mail * 50 = 1500 (Maksimum skor)
@@ -78,6 +85,9 @@ export default function MailScreen() {
     setSecurityScore(500);
     setFeedback(null);
     setFailedConsequence('');
+    setStreak(0);
+    setCorrectCount(0);
+    setEarnedVPMsg('');
     setGameStatus('playing');
   };
 
@@ -91,6 +101,18 @@ export default function MailScreen() {
       playSynthSound('success', sound, sfxVolume);
       if (navigator.vibrate) navigator.vibrate(50);
 
+      const nextStreak = streak + 1;
+      setStreak(nextStreak);
+      const nextCorrect = correctCount + 1;
+      setCorrectCount(nextCorrect);
+
+      const { vpEarned, streakBonus } = awardAnswerVP(true, nextStreak);
+      let vpText = `+${vpEarned} VP`;
+      if (streakBonus > 0) {
+        vpText += ` & +${streakBonus} VP Seri Bonusu!`;
+      }
+      setEarnedVPMsg(vpText);
+
       setFeedback({
         isCorrect: true,
         text: currentEmail.consequenceSuccess || "Şüpheli durumu fark ederek doğru karar verdiniz.",
@@ -101,6 +123,8 @@ export default function MailScreen() {
       setGameStatus('feedback');
     } else {
       // Incorrect decision!
+      setStreak(0);
+      setEarnedVPMsg('');
       
       // Case C: Kritik maili güvenli bulursa -> Instant Game Over
       if (!currentEmail.isSafe && currentEmail.dangerLevel === 'high' && userSaysSafe) {
@@ -160,6 +184,24 @@ export default function MailScreen() {
       setGameStatus('won');
       playSynthSound('win', sound, sfxVolume);
       if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
+
+      // Award completion VP
+      awardCompletionVP();
+
+      // Check achievements at won state
+      const nextCorrect = correctCount;
+      if (nextCorrect >= 18) {
+        unlockAchievement('accuracy_90');
+      }
+      if (nextCorrect === 20) {
+        unlockAchievement('email_master');
+      }
+      const savedAchievements = JSON.parse(localStorage.getItem('safely_unlocked_achievements') || '[]');
+      const hasPasswordMaster = savedAchievements.includes('password_master');
+      const hasPermissionMaster = savedAchievements.includes('permission_master');
+      if (nextCorrect === 20 && hasPasswordMaster && hasPermissionMaster) {
+        unlockAchievement('cyber_detective');
+      }
     }
   };
 
@@ -461,6 +503,11 @@ export default function MailScreen() {
               <p className="text-[11px] font-bold text-slate-500 dark:text-gray-500 uppercase tracking-widest mt-0.5">
                 {feedback.isCorrect ? 'Tehdit Engellendi' : 'Güvenlik Açığı'}
               </p>
+              {feedback.isCorrect && earnedVPMsg && (
+                <div className="mt-2 inline-block px-3 py-1 bg-amber-500/10 text-amber-500 text-[11px] font-extrabold uppercase rounded-full border border-amber-500/20">
+                  {earnedVPMsg}
+                </div>
+              )}
             </div>
 
             <div className="p-4 rounded-2xl bg-white dark:bg-[#12141c] border border-slate-200 dark:border-[#1f2330] text-sm text-slate-600 dark:text-gray-300 leading-relaxed text-left space-y-2 shadow-sm">

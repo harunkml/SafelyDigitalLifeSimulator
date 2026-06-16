@@ -18,7 +18,11 @@ export default function Permissions() {
     setPermissionsScore, 
     setPermissionsCompleted, 
     permissionsScore,
-    sfxVolume
+    sfxVolume,
+    awardAnswerVP,
+    awardCompletionVP,
+    awardEndGameVP,
+    unlockAchievement
   } = useApp();
   
   const navigate = useNavigate();
@@ -31,11 +35,18 @@ export default function Permissions() {
   const [submitting, setSubmitting] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
+  const [streak, setStreak] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [earnedVPMsg, setEarnedVPMsg] = useState('');
+
   const startNewGame = () => {
     setGameApps(getRandomApps(15));
     setCurrentIndex(0);
     setLocalScore(0);
     setFeedback(null);
+    setStreak(0);
+    setCorrectCount(0);
+    setEarnedVPMsg('');
     setGameStatus('playing');
   };
 
@@ -47,15 +58,30 @@ export default function Permissions() {
 
   const handleDecision = (blockAction, app) => {
     const isCorrect = (blockAction && !app.isSafe) || (!blockAction && app.isSafe);
+    let earnedText = '';
     
     if (isCorrect) {
       playSynthSound('success', sfxVolume);
       if (navigator.vibrate) navigator.vibrate(50);
       setLocalScore((prev) => prev + 100);
+
+      const nextStreak = streak + 1;
+      setStreak(nextStreak);
+      const nextCorrect = correctCount + 1;
+      setCorrectCount(nextCorrect);
+
+      const { vpEarned, streakBonus } = awardAnswerVP(true, nextStreak);
+      earnedText = `+${vpEarned} VP`;
+      if (streakBonus > 0) {
+        earnedText += ` & +${streakBonus} VP Seri Bonusu!`;
+      }
     } else {
       playSynthSound('failure', sfxVolume);
       if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+      setStreak(0);
     }
+
+    setEarnedVPMsg(earnedText);
 
     setFeedback({
       isCorrect,
@@ -78,6 +104,24 @@ export default function Permissions() {
       const finalScore = localScore + completionBonus;
       setPermissionsScore(finalScore);
       setGameStatus('won');
+
+      // Award completion VP
+      awardCompletionVP();
+
+      // Check achievements
+      const finalCorrect = correctCount;
+      if (finalCorrect >= 14) {
+        unlockAchievement('accuracy_90');
+      }
+      if (finalCorrect === 15) {
+        unlockAchievement('permission_master');
+      }
+      const savedAchievements = JSON.parse(localStorage.getItem('safely_unlocked_achievements') || '[]');
+      const hasEmailMaster = savedAchievements.includes('email_master');
+      const hasPasswordMaster = savedAchievements.includes('password_master');
+      if (finalCorrect === 15 && hasEmailMaster && hasPasswordMaster) {
+        unlockAchievement('cyber_detective');
+      }
     }
   };
 
@@ -87,6 +131,12 @@ export default function Permissions() {
       const finalScore = localScore + 200;
       const totalScore = mailScore + passwordScore + finalScore;
       await saveFinalScore(username, totalScore, lives);
+
+      // Award Oyun Sonu VP
+      awardEndGameVP(totalScore);
+
+      // Unlock persistent_player achievement
+      unlockAchievement('persistent_player');
     } catch (error) {
       console.error("Firestore final skoru kaydedilemedi:", error);
     } finally {
@@ -291,6 +341,11 @@ export default function Permissions() {
               <p className="text-sm font-medium text-slate-500 dark:text-gray-400 mt-1">
                 {currentApp.name} Değerlendirmesi
               </p>
+              {feedback.isCorrect && earnedVPMsg && (
+                <div className="mt-2 inline-block px-3 py-1 bg-amber-500/10 text-amber-500 text-[11px] font-extrabold uppercase rounded-full border border-amber-500/20">
+                  {earnedVPMsg}
+                </div>
+              )}
             </div>
 
             <div className="p-5 rounded-2xl bg-white dark:bg-[#12141c] border border-slate-200 dark:border-[#1f2330] text-sm text-slate-600 dark:text-gray-300 leading-relaxed text-left shadow-md">
