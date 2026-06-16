@@ -2189,9 +2189,9 @@ export const mockPasswords = [
   },
   {
     "id": 77,
-    "text": "Viski@8Halıcı$Teleskop",
+    "text": "Vişne@8Halıcı$Teleskop",
     "strength": "strong",
-    "explanation": "Rastgele nesneler + sayı + 2 özel karakter (@$). 20 karakter. 'Viski', 'Halıcı', 'Teleskop' ayrı dünyalar. Türkçe karakterler (ı, ç). Karakter çeşitliliği. Sözlük saldırısından güvenli."
+    "explanation": "Rastgele nesneler + sayı + 2 özel karakter (@$). 20 karakter. 'Vişne', 'Halıcı', 'Teleskop' ayrı dünyalar. Türkçe karakterler (ı, ş, ç). Karakter çeşitliliği. Sözlük saldırısından güvenli."
   },
   {
     "id": 78,
