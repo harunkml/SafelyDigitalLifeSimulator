@@ -22,7 +22,10 @@ export default function Permissions() {
     awardAnswerVP,
     awardCompletionVP,
     awardEndGameVP,
-    unlockAchievement
+    unlockAchievement,
+    userAvatar,
+    activeTheme,
+    activeCardTheme
   } = useApp();
   
   const navigate = useNavigate();
@@ -130,7 +133,7 @@ export default function Permissions() {
     try {
       const finalScore = localScore + 200;
       const totalScore = mailScore + passwordScore + finalScore;
-      await saveFinalScore(username, totalScore, lives);
+      await saveFinalScore(username, totalScore, lives, userAvatar, activeTheme, activeCardTheme);
 
       // Award Oyun Sonu VP
       awardEndGameVP(totalScore);

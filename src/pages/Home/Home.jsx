@@ -14,7 +14,8 @@ export default function Home() {
     passwordCompleted, 
     permissionsCompleted,
     veriPuani,
-    unlockedAchievements
+    unlockedAchievements,
+    userAvatar
   } = useApp();
   const navigate = useNavigate();
   
@@ -208,7 +209,7 @@ export default function Home() {
         >
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-cyan-50 dark:bg-cyan-accent/10 border border-cyan-100 dark:border-cyan-accent/20 flex items-center justify-center group-hover:border-cyan-accent/30 transition-all shrink-0">
-              <UserCheck className="w-4.5 h-4.5 text-cyan-600 dark:text-cyan-accent" />
+              <span className="text-lg leading-none select-none">{userAvatar || '👤'}</span>
             </div>
             <div className="text-left">
               <p className="text-[8px] text-slate-400 dark:text-gray-500 font-black uppercase tracking-widest leading-none mb-1">Benim Profilim</p>

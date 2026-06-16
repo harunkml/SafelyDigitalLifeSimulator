@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { getLeaderboard } from '../../firebase/leaderboardService';
 import { Trophy, Award, Shield, Loader2 } from 'lucide-react';
+import { useApp } from '../../state/AppContext';
 
 export default function Leaderboard() {
+  const { username } = useApp();
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all'); // 'all' | 'weekly'
@@ -107,46 +109,60 @@ export default function Leaderboard() {
             <p className="text-xs text-slate-500 max-w-xs leading-relaxed">Oyunu tamamlayan ilk siber koruyucu olmak için simülasyonu bitirin!</p>
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-[#1f2330]">
-            {leaderboardData.map((player, index) => (
-              <div 
-                key={player.id || index}
-                className="flex items-center justify-between p-3.5 hover:bg-slate-50/50 dark:hover:bg-[#151822] transition-colors"
-              >
-                {/* Position and Player info */}
-                <div className="flex items-center gap-3 overflow-hidden pr-2">
-                  <div className="w-8 flex items-center justify-center shrink-0">
-                    {getRankBadge(index)}
-                  </div>
-                  
-                  <div className="overflow-hidden">
-                    <span className="text-sm font-black text-slate-800 dark:text-white block truncate">
-                      {player.username}
-                    </span>
-                    <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold border mt-0.5 ${getTitleBadgeStyle(player.title)}`}>
-                      {player.title || "Açık Hedef 🎯"}
-                    </span>
-                  </div>
-                </div>
+          <div className="flex-1 overflow-y-auto p-3 space-y-3">
+            {leaderboardData.map((player, index) => {
+              const isUser = player.username.toLowerCase() === username.toLowerCase();
+              const cardThemeClass = `card-theme-${player.cardTheme || 'clean-slate'}`;
+              const highlightClass = isUser ? 'ring-2 ring-amber-500 shadow-md scale-[1.01]' : '';
 
-                {/* Score and stats */}
-                <div className="flex items-center gap-4 shrink-0 text-right">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[10px] font-bold text-slate-400 dark:text-gray-500 uppercase tracking-widest">Skor</span>
-                    <span className="text-sm font-mono font-black text-cyan-600 dark:text-cyan-accent">{player.score} Puan</span>
+              return (
+                <div 
+                  key={player.id || index}
+                  className={`flex items-center justify-between p-3 rounded-2xl transition-all relative overflow-hidden select-none ${cardThemeClass} ${highlightClass}`}
+                  style={{ minHeight: '76px' }}
+                >
+                  {/* Position, Emoji Avatar & Name */}
+                  <div className="flex items-center gap-3 overflow-hidden pr-2 z-10">
+                    <div className="w-6 flex items-center justify-center shrink-0">
+                      {isUser ? (
+                        <span className="text-[9px] bg-amber-500 text-white font-black px-1.5 py-0.5 rounded uppercase tracking-wider">Sen</span>
+                      ) : (
+                        getRankBadge(index)
+                      )}
+                    </div>
+
+                    <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-black/10 border border-slate-350/20 flex items-center justify-center shrink-0 text-xl select-none">
+                      {player.avatar || '👤'}
+                    </div>
+                    
+                    <div className="overflow-hidden text-left">
+                      <span className="text-sm font-black text-slate-800 dark:text-white block truncate leading-tight">
+                        {player.username}
+                      </span>
+                      <span className={`inline-block px-1.5 py-0.5 rounded text-[8px] font-bold border mt-1 ${getTitleBadgeStyle(player.title)}`}>
+                        {player.title || "Açık Hedef 🎯"}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="flex flex-col items-end gap-0.5 border-l border-slate-100 dark:border-[#1f2330] pl-3 min-w-[55px]">
-                    <span className="text-[10px] font-bold text-slate-400 dark:text-gray-500 uppercase tracking-widest">Rozetler</span>
-                    <div className="flex items-center gap-0.5 text-xs font-bold text-slate-700 dark:text-gray-300">
-                      <Award className="w-3.5 h-3.5 text-amber-500" />
-                      <span>{player.badgeCount || 0}</span>
+                  {/* Score and stats */}
+                  <div className="flex items-center gap-3 shrink-0 text-right z-10">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[8px] font-black text-slate-450 dark:text-gray-500 uppercase tracking-widest leading-none">Skor</span>
+                      <span className="text-xs font-mono font-black text-cyan-600 dark:text-cyan-accent leading-none">{player.score} Puan</span>
+                    </div>
+
+                    <div className="flex flex-col items-end gap-0.5 border-l border-slate-300/20 pl-2.5 min-w-[48px]">
+                      <span className="text-[8px] font-black text-slate-450 dark:text-gray-500 uppercase tracking-widest leading-none">Rozetler</span>
+                      <div className="flex items-center gap-0.5 text-xs font-bold text-slate-700 dark:text-gray-300 leading-none">
+                        <Award className="w-3 h-3 text-amber-500" />
+                        <span className="text-[10px] font-bold leading-none">{player.badgeCount || 0}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

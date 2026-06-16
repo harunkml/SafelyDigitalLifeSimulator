@@ -473,6 +473,393 @@ body {
   animation: pulse-cyan-ocean-dark 2s infinite !important;
 }
 
+/* ==========================================
+   NEON SUNSET THEME OVERRIDES
+   ========================================== */
+:root.neon-sunset {
+  --color-cyan-accent: #FB923C;
+  --color-safe-green: #22C55E;
+  --color-danger-red: #EF4444;
+  --color-warning-orange: #FB923C;
+}
+:root.neon-sunset body {
+  background-color: #FFF3E6 !important;
+  color: #431407 !important;
+}
+:root.neon-sunset.dark body {
+  background-color: #120B08 !important;
+  color: #F8FAFC !important;
+}
+:root.neon-sunset {
+  .bg-slate-50 { background-color: #FFF3E6 !important; }
+  .bg-slate-100 { background-color: #FFF3E6 !important; }
+  .bg-white, .bg-\[\#12141c\] {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(251, 146, 60, 0.25) !important;
+  }
+  .border-slate-200 { border-color: #FED7AA !important; }
+  .text-slate-800 { color: #431407 !important; }
+  .text-slate-900 { color: #9A3412 !important; }
+  .text-slate-500 { color: #C2410C !important; }
+
+  &.dark {
+    .bg-slate-50, .bg-\[\#08090d\], .dark\:bg-\[\#08090d\] { background-color: #120B08 !important; }
+    .bg-white, .bg-\[\#12141c\], .dark\:bg-\[\#12141c\] {
+      background-color: rgba(34, 19, 15, 0.8) !important;
+      border: 1px solid rgba(251, 146, 60, 0.15) !important;
+    }
+    .border-slate-200, .border-\[\#1f2330\], .dark\:border-\[\#1f2330\] { border-color: #431407 !important; }
+    .text-slate-800, .text-white, .dark\:text-white { color: #FFF3E6 !important; }
+    .text-slate-550, .text-slate-500, .dark\:text-gray-400, .dark\:text-gray-500 { color: #FDBA74 !important; }
+  }
+}
+
+/* ==========================================
+   NOVA CORE THEME OVERRIDES
+   ========================================== */
+:root.nova-core {
+  --color-cyan-accent: #3B82F6;
+  --color-safe-green: #22C55E;
+  --color-danger-red: #EF4444;
+  --color-warning-orange: #F59E0B;
+}
+:root.nova-core body {
+  background-color: #EEF7FF !important;
+  color: #0F172A !important;
+}
+:root.nova-core.dark body {
+  background-color: #040A14 !important;
+  color: #F8FAFC !important;
+}
+:root.nova-core {
+  .bg-slate-50 { background-color: #EEF7FF !important; }
+  .bg-slate-100 { background-color: #EEF7FF !important; }
+  .bg-white, .bg-\[\#12141c\] {
+    background-color: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid rgba(59, 130, 246, 0.2) !important;
+  }
+  .border-slate-200 { border-color: #BFDBFE !important; }
+  .text-slate-800 { color: #0F172A !important; }
+  .text-slate-900 { color: #1E40AF !important; }
+  .text-slate-500 { color: #2563EB !important; }
+
+  &.dark {
+    .bg-slate-50, .bg-\[\#08090d\], .dark\:bg-\[\#08090d\] { background-color: #040A14 !important; }
+    .bg-white, .bg-\[\#12141c\], .dark\:bg-\[\#12141c\] {
+      background-color: rgba(14, 23, 40, 0.8) !important;
+      border: 1px solid rgba(96, 165, 250, 0.15) !important;
+    }
+    .border-slate-200, .border-\[\#1f2330\], .dark\:border-\[\#1f2330\] { border-color: #1E293B !important; }
+    .text-slate-800, .text-white, .dark\:text-white { color: #EEF7FF !important; }
+    .text-slate-550, .text-slate-500, .dark\:text-gray-400, .dark\:text-gray-500 { color: #93C5FD !important; }
+  }
+}
+
+/* ==========================================
+   COPPER CIRCUIT THEME OVERRIDES
+   ========================================== */
+:root.copper-circuit {
+  --color-cyan-accent: #B45309;
+  --color-safe-green: #22C55E;
+  --color-danger-red: #EF4444;
+  --color-warning-orange: #D97706;
+}
+:root.copper-circuit body {
+  background-color: #FAF3ED !important;
+  color: #451A03 !important;
+}
+:root.copper-circuit.dark body {
+  background-color: #120C07 !important;
+  color: #F8FAFC !important;
+}
+:root.copper-circuit {
+  .bg-slate-50 { background-color: #FAF3ED !important; }
+  .bg-slate-100 { background-color: #FAF3ED !important; }
+  .bg-white, .bg-\[\#12141c\] {
+    background-color: rgba(255, 253, 251, 0.85) !important;
+    border: 1px solid rgba(180, 83, 9, 0.25) !important;
+  }
+  .border-slate-200 { border-color: #FED7AA !important; }
+  .text-slate-800 { color: #451A03 !important; }
+  .text-slate-900 { color: #92400E !important; }
+  .text-slate-500 { color: #B45309 !important; }
+
+  &.dark {
+    .bg-slate-50, .bg-\[\#08090d\], .dark\:bg-\[\#08090d\] { background-color: #120C07 !important; }
+    .bg-white, .bg-\[\#12141c\], .dark\:bg-\[\#12141c\] {
+      background-color: rgba(33, 21, 13, 0.8) !important;
+      border: 1px solid rgba(217, 119, 6, 0.15) !important;
+    }
+    .border-slate-200, .border-\[\#1f2330\], .dark\:border-\[\#1f2330\] { border-color: #451A03 !important; }
+    .text-slate-800, .text-white, .dark\:text-white { color: #FAF3ED !important; }
+    .text-slate-550, .text-slate-500, .dark\:text-gray-400, .dark\:text-gray-500 { color: #F59E0B !important; }
+  }
+}
+
+/* ==========================================
+   CYBER MASTER (SIBER USTA) GENERAL THEME
+   ========================================== */
+:root.cyber-master {
+  --color-cyan-accent: #EAB308;
+  --color-safe-green: #10B981;
+  --color-danger-red: #EF4444;
+  --color-warning-orange: #F97316;
+}
+:root.cyber-master body {
+  background-color: #FEFCE8 !important;
+  color: #422006 !important;
+}
+:root.cyber-master.dark body {
+  background-color: #090A0F !important;
+  color: #FEFCE8 !important;
+}
+:root.cyber-master {
+  .bg-slate-50 { background-color: #FEFCE8 !important; }
+  .bg-slate-100 { background-color: #FEFCE8 !important; }
+  .bg-white, .bg-\[\#12141c\] {
+    background-color: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid rgba(234, 179, 8, 0.3) !important;
+  }
+  .border-slate-200 { border-color: #FEF08A !important; }
+  .text-slate-800 { color: #422006 !important; }
+  .text-slate-900 { color: #ca8a04 !important; }
+  .text-slate-500 { color: #eab308 !important; }
+
+  &.dark {
+    .bg-slate-50, .bg-\[\#08090d\], .dark\:bg-\[\#08090d\] { background-color: #090A0F !important; }
+    .bg-white, .bg-\[\#12141c\], .dark\:bg-\[\#12141c\] {
+      background-color: rgba(18, 16, 24, 0.8) !important;
+      border: 1px solid rgba(234, 179, 8, 0.2) !important;
+    }
+    .border-slate-200, .border-\[\#1f2330\], .dark\:border-\[\#1f2330\] { border-color: #1A1820 !important; }
+    .text-slate-800, .text-white, .dark\:text-white { color: #FEFCE8 !important; }
+    .text-slate-550, .text-slate-500, .dark\:text-gray-400, .dark\:text-gray-500 { color: #EAB308 !important; }
+  }
+}
+
+/* ==========================================
+   OYUNCU KART TEMALARI (PLAYER CARD THEMES)
+   ========================================== */
+
+/* Common */
+.card-theme-clean-slate {
+  border: 1px solid #d1d5db !important;
+  background-color: rgba(243, 244, 246, 0.8) !important;
+  border-top: 4px solid #9ca3af !important;
+}
+.dark .card-theme-clean-slate {
+  border: 1px solid #374151 !important;
+  background-color: rgba(31, 41, 55, 0.4) !important;
+  border-top: 4px solid #4b5563 !important;
+}
+
+.card-theme-carbon {
+  border: 1px solid #1f2937 !important;
+  background-color: rgba(17, 24, 39, 0.95) !important;
+  border-top: 4px solid #111827 !important;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0), radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0) !important;
+  background-size: 8px 8px !important;
+  background-position: 0 0, 4px 4px !important;
+}
+
+.card-theme-card-ocean {
+  border: 1px solid #93c5fd !important;
+  background-color: rgba(239, 246, 255, 0.8) !important;
+  border-top: 4px solid #3b82f6 !important;
+}
+.dark .card-theme-card-ocean {
+  border: 1px solid #1e3a8a !important;
+  background-color: rgba(15, 23, 42, 0.4) !important;
+  border-top: 4px solid #2563eb !important;
+}
+
+.card-theme-secure {
+  border: 2px solid #06b6d4 !important;
+  background-color: rgba(236, 254, 255, 0.85) !important;
+  border-top: 4px solid #06b6d4 !important;
+}
+.dark .card-theme-secure {
+  border: 2px solid #06b6d4 !important;
+  background-color: rgba(8, 17, 32, 0.4) !important;
+  border-top: 4px solid #0891b2 !important;
+}
+
+/* Rare */
+.card-theme-card-arctic {
+  border: 1px solid #38bdf8 !important;
+  background-color: rgba(224, 242, 254, 0.8) !important;
+  border-top: 4px solid #0ea5e9 !important;
+  background-image: radial-gradient(rgba(14, 165, 233, 0.1) 1.5px, transparent 1.5px) !important;
+  background-size: 12px 12px !important;
+}
+.dark .card-theme-card-arctic {
+  border: 1px solid #0284c7 !important;
+  background-color: rgba(8, 20, 32, 0.4) !important;
+  border-top: 4px solid #38bdf8 !important;
+  background-image: radial-gradient(rgba(56, 189, 248, 0.1) 1.5px, transparent 1.5px) !important;
+  background-size: 12px 12px !important;
+}
+
+.card-theme-card-matrix {
+  border: 1px solid #10b981 !important;
+  background-color: rgba(236, 253, 245, 0.8) !important;
+  border-top: 4px solid #10b981 !important;
+  background-image: linear-gradient(rgba(16, 185, 129, 0.05) 50%, transparent 50%) !important;
+  background-size: 100% 4px !important;
+  font-family: monospace !important;
+}
+.dark .card-theme-card-matrix {
+  border: 1px solid #059669 !important;
+  background-color: rgba(3, 10, 4, 0.4) !important;
+  border-top: 4px solid #34d399 !important;
+  background-image: linear-gradient(rgba(52, 211, 153, 0.05) 50%, transparent 50%) !important;
+  background-size: 100% 4px !important;
+  font-family: monospace !important;
+}
+
+.card-theme-card-amber {
+  border: 1px solid #f97316 !important;
+  background-color: rgba(255, 247, 237, 0.85) !important;
+  border-top: 4px solid #ea580c !important;
+}
+.dark .card-theme-card-amber {
+  border: 1px solid #ea580c !important;
+  background-color: rgba(28, 13, 2, 0.45) !important;
+  border-top: 4px solid #f97316 !important;
+}
+
+.card-theme-network-grid {
+  border: 1px solid #64748b !important;
+  background-color: rgba(248, 250, 252, 0.8) !important;
+  border-top: 4px solid #475569 !important;
+  background-image: linear-gradient(rgba(100, 116, 139, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(100, 116, 139, 0.05) 1px, transparent 1px) !important;
+  background-size: 16px 16px !important;
+}
+.dark .card-theme-network-grid {
+  border: 1px solid #475569 !important;
+  background-color: rgba(15, 23, 42, 0.3) !important;
+  border-top: 4px solid #64748b !important;
+  background-image: linear-gradient(rgba(100, 116, 139, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(100, 116, 139, 0.05) 1px, transparent 1px) !important;
+  background-size: 16px 16px !important;
+}
+
+/* Epic */
+.card-theme-data-stream {
+  border: 1px solid #6366f1 !important;
+  background-color: rgba(245, 243, 255, 0.8) !important;
+  border-top: 4px solid #6366f1 !important;
+  background-image: linear-gradient(to bottom, rgba(99, 102, 241, 0.06) 1px, transparent 1px) !important;
+  background-size: 100% 12px !important;
+}
+.dark .card-theme-data-stream {
+  border: 1px solid #4f46e5 !important;
+  background-color: rgba(17, 12, 34, 0.4) !important;
+  border-top: 4px solid #818cf8 !important;
+  background-image: linear-gradient(to bottom, rgba(129, 140, 248, 0.06) 1px, transparent 1px) !important;
+  background-size: 100% 12px !important;
+}
+
+.card-theme-encrypted {
+  border: 1px solid #14b8a6 !important;
+  background-color: rgba(240, 253, 250, 0.85) !important;
+  border-top: 4px solid #0d9488 !important;
+  font-family: monospace !important;
+  background-image: radial-gradient(rgba(20, 184, 166, 0.08) 20%, transparent 20%), radial-gradient(rgba(20, 184, 166, 0.08) 20%, transparent 20%) !important;
+  background-size: 14px 14px !important;
+  background-position: 0 0, 7px 7px !important;
+}
+.dark .card-theme-encrypted {
+  border: 1px solid #0d9488 !important;
+  background-color: rgba(9, 11, 16, 0.5) !important;
+  border-top: 4px solid #14b8a6 !important;
+  font-family: monospace !important;
+  background-image: radial-gradient(rgba(20, 184, 166, 0.08) 20%, transparent 20%), radial-gradient(rgba(20, 184, 166, 0.08) 20%, transparent 20%) !important;
+  background-size: 14px 14px !important;
+  background-position: 0 0, 7px 7px !important;
+}
+
+.card-theme-satellite {
+  border: 1px solid #0284c7 !important;
+  background-color: rgba(240, 249, 255, 0.8) !important;
+  border-top: 4px solid #0369a1 !important;
+  background-image: radial-gradient(#bae6fd 1.5px, transparent 1.5px) !important;
+  background-size: 20px 20px !important;
+}
+.dark .card-theme-satellite {
+  border: 1px solid #0369a1 !important;
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  border-top: 4px solid #38bdf8 !important;
+  background-image: radial-gradient(#1e293b 1.5px, transparent 1.5px) !important;
+  background-size: 20px 20px !important;
+}
+
+.card-theme-threat-monitor {
+  border: 2px solid #dc2626 !important;
+  background-color: rgba(254, 242, 242, 0.85) !important;
+  border-top: 4px solid #dc2626 !important;
+}
+.dark .card-theme-threat-monitor {
+  border: 2px solid #ef4444 !important;
+  background-color: rgba(24, 8, 8, 0.45) !important;
+  border-top: 4px solid #f87171 !important;
+}
+
+/* Legendary */
+.card-theme-cyber-guardian {
+  border: 2px double #f59e0b !important;
+  background-color: rgba(255, 251, 235, 0.85) !important;
+  border-top: 4px solid #f59e0b !important;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.1) !important;
+}
+.dark .card-theme-cyber-guardian {
+  border: 2px double #f59e0b !important;
+  background-color: rgba(16, 24, 36, 0.5) !important;
+  border-top: 4px solid #d97706 !important;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.15) !important;
+}
+
+.card-theme-quantum {
+  border: 1px solid #22d3ee !important;
+  background-color: rgba(236, 254, 255, 0.9) !important;
+  border-top: 4px solid #06b6d4 !important;
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.1) !important;
+}
+.dark .card-theme-quantum {
+  border: 1px solid #06b6d4 !important;
+  background-color: rgba(8, 20, 36, 0.5) !important;
+  border-top: 4px solid #22d3ee !important;
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.15) !important;
+}
+
+.card-theme-founder {
+  border: 2px solid #475569 !important;
+  background-color: rgba(241, 245, 249, 0.9) !important;
+  border-top: 4px solid #0f172a !important;
+  background-image: linear-gradient(135deg, rgba(226, 232, 240, 0.2) 25%, transparent 25%), linear-gradient(225deg, rgba(226, 232, 240, 0.2) 25%, transparent 25%) !important;
+  background-size: 20px 20px !important;
+}
+.dark .card-theme-founder {
+  border: 2px solid #94a3b8 !important;
+  background-color: rgba(30, 41, 59, 0.5) !important;
+  border-top: 4px solid #f8fafc !important;
+  background-image: linear-gradient(135deg, rgba(148, 163, 184, 0.05) 25%, transparent 25%), linear-gradient(225deg, rgba(148, 163, 184, 0.05) 25%, transparent 25%) !important;
+  background-size: 20px 20px !important;
+}
+
+/* Special Siber Usta */
+.card-theme-cyber-master-card {
+  border: 2px solid #eab308 !important;
+  background-color: rgba(254, 252, 232, 0.9) !important;
+  border-top: 4px solid #eab308 !important;
+  box-shadow: 0 0 12px rgba(234, 179, 8, 0.1) !important;
+}
+.dark .card-theme-cyber-master-card {
+  border: 2px solid #eab308 !important;
+  background-color: rgba(18, 16, 24, 0.65) !important;
+  border-top: 4px solid #eab308 !important;
+  box-shadow: 0 0 15px rgba(234, 179, 8, 0.15) !important;
+}
+
 
 
 

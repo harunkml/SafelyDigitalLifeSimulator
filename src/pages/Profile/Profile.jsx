@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useApp, ACHIEVEMENTS } from '../../state/AppContext';
+import { useApp, ACHIEVEMENTS, COSMETICS_DB } from '../../state/AppContext';
 import { 
-  User, 
   Award, 
   Trophy, 
   ShieldCheck, 
@@ -46,9 +45,14 @@ export default function Profile() {
   const { 
     username, 
     setUsername, 
-    unlockedAchievements
+    unlockedAchievements,
+    userAvatar,
+    selectUserAvatar,
+    unlockedEmojis,
+    activeCardTheme,
+    selectActiveCardTheme,
+    unlockedCardThemes
   } = useApp();
-  
   const [nameInput, setNameInput] = useState(username);
   const [successMsg, setSuccessMsg] = useState('');
   const [selectedAch, setSelectedAch] = useState(null);
@@ -87,7 +91,7 @@ export default function Profile() {
         
         {/* Avatar */}
         <div className="w-14 h-14 rounded-2xl bg-cyan-50 dark:bg-cyan-accent/10 border border-cyan-200 dark:border-cyan-accent/20 flex items-center justify-center mb-3 relative z-10 shrink-0 shadow-sm">
-          <User className="w-6 h-6 text-cyan-600 dark:text-cyan-accent" />
+          <span className="text-3xl leading-none select-none">{userAvatar}</span>
         </div>
 
         {/* Username form */}
@@ -138,6 +142,102 @@ export default function Profile() {
             <span>Tüm oyun modüllerini tamamlayıp skorunuzu kaydettiğinizde nihai sertifikanız ve en yüksek skorunuz burada görünecektir.</span>
           </div>
         )}
+      </div>
+
+      {/* Profil Özelleştirme (Customization) Section */}
+      <div className="p-4 rounded-3xl bg-white dark:bg-[#12141c] border border-slate-200 dark:border-[#1f2330] shadow-sm mb-4 space-y-4">
+        <div className="flex items-center gap-2 text-cyan-600 dark:text-cyan-accent border-b border-slate-100 dark:border-[#1f2330] pb-2">
+          <Palette className="w-4 h-4" />
+          <h3 className="text-xs font-black uppercase tracking-wider">Profil Özelleştirme</h3>
+        </div>
+
+        {/* Live Preview Card */}
+        <div className="space-y-2">
+          <span className="text-[10px] text-slate-400 dark:text-gray-500 uppercase tracking-widest font-black block leading-none">Skor Kartı Önizleme</span>
+          <div className="p-1 rounded-2xl bg-slate-50 dark:bg-[#08090d]/60 border border-slate-100 dark:border-[#1f2330]">
+            <div className={`flex items-center justify-between p-3.5 rounded-xl card-theme-${activeCardTheme} select-none`}>
+              <div className="flex items-center gap-3 overflow-hidden pr-2">
+                <span className="text-xl leading-none select-none shrink-0">{userAvatar}</span>
+                <div className="overflow-hidden text-left">
+                  <span className="text-sm font-black text-slate-800 dark:text-white block truncate leading-tight">
+                    {username || 'Kullanıcı'}
+                  </span>
+                  <span className="inline-block bg-slate-200/50 dark:bg-slate-800/50 text-slate-700 dark:text-gray-350 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider mt-1 border border-slate-300/30">
+                    {leaderboardRecord ? leaderboardRecord.title : 'Acemi Kullanıcı 📱'}
+                  </span>
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <span className="text-[8px] font-black text-slate-450 dark:text-gray-500 uppercase tracking-widest block mb-0.5">Skor</span>
+                <span className="text-xs font-mono font-black text-cyan-600 dark:text-cyan-accent leading-none">
+                  {leaderboardRecord ? leaderboardRecord.score : 0} Puan
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Emoji Selector */}
+        <div className="space-y-2">
+          <span className="text-[10px] text-slate-400 dark:text-gray-500 uppercase tracking-widest font-black block leading-none">Profil Emojisi</span>
+          <div className="flex flex-wrap gap-2 p-2 rounded-2xl bg-slate-50 dark:bg-[#08090d]/60 border border-slate-100 dark:border-[#1f2330]">
+            {unlockedEmojis.map((emoji) => (
+              <button
+                key={emoji}
+                onClick={() => selectUserAvatar(emoji)}
+                className={`w-9 h-9 rounded-xl border flex items-center justify-center text-lg transition-all active:scale-95 cursor-pointer ${
+                  userAvatar === emoji
+                    ? 'border-cyan-accent bg-cyan-500/10 text-cyan-accent'
+                    : 'border-slate-200 dark:border-[#1f2330] bg-white dark:bg-[#12141c] hover:border-slate-350 text-slate-700 dark:text-gray-350'
+                }`}
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Card Theme Selector */}
+        <div className="space-y-2">
+          <span className="text-[10px] text-slate-400 dark:text-gray-500 uppercase tracking-widest font-black block leading-none">Skor Kartı Çerçevesi</span>
+          <div className="grid grid-cols-2 gap-2 p-2 rounded-2xl bg-slate-50 dark:bg-[#08090d]/60 border border-slate-100 dark:border-[#1f2330]">
+            {unlockedCardThemes.map((themeId) => {
+              let displayName = themeId;
+              let isSpecial = false;
+              if (themeId === 'clean-slate') displayName = '📄 Clean Slate';
+              else {
+                const categories = ['common', 'rare', 'epic', 'legendary'];
+                for (const cat of categories) {
+                  const found = COSMETICS_DB.cardThemes[cat]?.find(t => t.value === themeId);
+                  if (found) {
+                    displayName = found.name;
+                    break;
+                  }
+                }
+              }
+              if (themeId === 'cyber-master-card') {
+                displayName = '🏆 Siber Usta';
+                isSpecial = true;
+              }
+
+              return (
+                <button
+                  key={themeId}
+                  onClick={() => selectActiveCardTheme(themeId)}
+                  className={`py-2 px-2.5 rounded-xl border text-[10px] font-black uppercase tracking-wider transition-all active:scale-95 text-center truncate cursor-pointer ${
+                    activeCardTheme === themeId
+                      ? 'border-cyan-accent bg-cyan-500/10 text-cyan-accent'
+                      : isSpecial
+                      ? 'border-amber-500/40 bg-amber-500/5 text-amber-500 hover:border-amber-550'
+                      : 'border-slate-200 dark:border-[#1f2330] bg-white dark:bg-[#12141c] hover:border-slate-350 text-slate-700 dark:text-gray-350'
+                  }`}
+                >
+                  {displayName}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* Badges / Achievements Header */}

@@ -18,6 +18,101 @@ export const getWeekIdentifier = () => {
   return `${date.getUTCFullYear()}-W${String(weekNo).padStart(2, '0')}`;
 };
 
+// Static Artificial Players (7 Mock Players: 1 High, 4 Avg, 2 Low)
+export const MOCK_PLAYERS = [
+  {
+    id: "mock_1",
+    username: "SiberGoz_99",
+    score: 3300,
+    heartsRemaining: 3,
+    title: getTitleForScore(3300),
+    status: "completed",
+    weekId: getWeekIdentifier(),
+    avatar: "👑",
+    cardTheme: "cyber-guardian",
+    theme: "matrix",
+    completedAt: new Date(Date.now() - 2 * 3600000).toISOString() // 2 hours ago
+  },
+  {
+    id: "mock_2",
+    username: "Kripto_Kağan",
+    score: 2450,
+    heartsRemaining: 2,
+    title: getTitleForScore(2450),
+    status: "completed",
+    weekId: getWeekIdentifier(),
+    avatar: "🦊",
+    cardTheme: "card-amber",
+    theme: "amber",
+    completedAt: new Date(Date.now() - 4 * 3600000).toISOString() // 4 hours ago
+  },
+  {
+    id: "mock_3",
+    username: "VeriKalkanı",
+    score: 1850,
+    heartsRemaining: 3,
+    title: getTitleForScore(1850),
+    status: "completed",
+    weekId: getWeekIdentifier(),
+    avatar: "🛡️",
+    cardTheme: "secure",
+    theme: "default",
+    completedAt: new Date(Date.now() - 12 * 3600000).toISOString() // 12 hours ago
+  },
+  {
+    id: "mock_4",
+    username: "HackerBuster",
+    score: 1520,
+    heartsRemaining: 1,
+    title: getTitleForScore(1520),
+    status: "completed",
+    weekId: "2026-W10",
+    avatar: "👨‍💻",
+    cardTheme: "threat-monitor",
+    theme: "neon-sunset",
+    completedAt: "2026-06-10T14:20:00.000Z"
+  },
+  {
+    id: "mock_5",
+    username: "KodYazanKedi",
+    score: 1200,
+    heartsRemaining: 2,
+    title: getTitleForScore(1200),
+    status: "completed",
+    weekId: getWeekIdentifier(),
+    avatar: "🐱",
+    cardTheme: "card-ocean",
+    theme: "ocean",
+    completedAt: new Date(Date.now() - 24 * 3600000).toISOString() // 1 day ago
+  },
+  {
+    id: "mock_6",
+    username: "SiberCırak",
+    score: 850,
+    heartsRemaining: 3,
+    title: getTitleForScore(850),
+    status: "completed",
+    weekId: "2026-W10",
+    avatar: "👤",
+    cardTheme: "clean-slate",
+    theme: "default",
+    completedAt: "2026-06-11T09:15:00.000Z"
+  },
+  {
+    id: "mock_7",
+    username: "LamerSavdı",
+    score: 450,
+    heartsRemaining: 1,
+    title: getTitleForScore(450),
+    status: "completed",
+    weekId: "2026-W10",
+    avatar: "🤖",
+    cardTheme: "clean-slate",
+    theme: "default",
+    completedAt: "2026-06-12T17:45:00.000Z"
+  }
+];
+
 /**
  * Checks if a username is unique on LocalStorage (case-insensitive check using lowercase IDs)
  */
@@ -51,6 +146,9 @@ export const reserveUsername = async (username) => {
     title: getTitleForScore(0),
     status: "registered",
     weekId: getWeekIdentifier(),
+    avatar: "👤",
+    theme: "default",
+    cardTheme: "clean-slate",
     createdAt: new Date().toISOString()
   };
 
@@ -62,7 +160,7 @@ export const reserveUsername = async (username) => {
 /**
  * Saves final score and locks the status to completed
  */
-export const saveFinalScore = async (username, score, lives) => {
+export const saveFinalScore = async (username, score, lives, avatar, theme, cardTheme) => {
   if (!username || !username.trim()) return;
   const usernameClean = username.trim().toLowerCase();
 
@@ -75,6 +173,9 @@ export const saveFinalScore = async (username, score, lives) => {
     title: getTitleForScore(score),
     status: "completed",
     weekId: getWeekIdentifier(),
+    avatar: avatar || '👤',
+    theme: theme || 'default',
+    cardTheme: cardTheme || 'clean-slate',
     completedAt: new Date().toISOString()
   };
 
@@ -90,21 +191,32 @@ export const saveFinalScore = async (username, score, lives) => {
 };
 
 /**
- * Retrieves the Top 50 completed records from LocalStorage
+ * Retrieves the Top 50 completed records from LocalStorage merged with static MOCK_PLAYERS
  */
 export const getLeaderboard = async (filter = 'all') => {
   const currentWeek = getWeekIdentifier();
 
-  const mockLeaderboard = JSON.parse(localStorage.getItem('safely_mock_leaderboard') || '{}');
-  const records = Object.values(mockLeaderboard)
-    .filter(record => record.status === 'completed' && (filter !== 'weekly' || record.weekId === currentWeek))
+  // Filter static mock players
+  const mockFiltered = MOCK_PLAYERS.filter(
+    player => filter !== 'weekly' || player.weekId === currentWeek
+  );
+
+  // Filter local storage players
+  const localLeaderboard = JSON.parse(localStorage.getItem('safely_mock_leaderboard') || '{}');
+  const localFiltered = Object.values(localLeaderboard).filter(
+    record => record.status === 'completed' && (filter !== 'weekly' || record.weekId === currentWeek)
+  );
+
+  // Combine lists
+  const combined = [...mockFiltered, ...localFiltered];
+
+  // Sort and slice
+  return combined
     .sort((a, b) => {
       if (b.score !== a.score) {
         return b.score - a.score;
       }
-      return new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime();
+      return new Date(a.completedAt || a.createdAt).getTime() - new Date(b.completedAt || b.createdAt).getTime();
     })
     .slice(0, 50);
-
-  return records;
 };
